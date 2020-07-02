@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+        <title>Sign Up</title>
+    </head>
+<script>
+    window.onload=sign_up;
+
+    function sign_up(){
+        var sign= document.getElementById('sign_up');
+        sign.onclick=sign_process;
+
+        
+    }
+
+    function sign_process(){
+        var req =new XMLHttpRequest();
+        url='/signup_request';
+        req.onreadystatechange = function(){
+            if(this.readyState==4 && this.status==200){
+                alert(req.responseText)
+            }
+            
+        };
+        req.open('GET',url,true);
+        req.send();
+    }
+
+    function validation(typed_mail){
+        if(typed_mail.value!=''){
+            var mail=typed_mail.value;
+            url='/validMail?email='+mail;
+            var req = new XMLHttpRequest;
+            req.onreadystatechange=function(){
+                if(this.readyState==4 && this.status==200){
+                    if(req.responseText=='true'){
+                        alert('This mail id already exist');
+                    }
+                    else{
+                     alert('you can create a new account');
+                   }
+                }
+            };
+            req.open('GET',url,true);
+            req.send();
+        }
+        }
+</script>
+
+
+
+
+<body>
+    <div>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+               <!-- Add book -->
+               <div class='col-lg-8 border border-info rounded m-4 p-4 mx-auto'>
+                <P class='alert alert-success'>Add Book</P>
+                  <div class='form-group'>
+                    <lable>Email</lable>
+                    <input type='text' id='email' class='form-control' onblur='validation(this)'>
+                  </div>
+                  <div class='form-group'>
+                    <lable>User Name</lable>
+                    <input type='number' id='user_name' class='form-control'>
+                  </div>
+                  <div class='form-group'>
+                    <lable>Password</lable>
+                    <input type='number' id='password' class='form-control'>
+                  </div>
+                  <div class='form-group'>
+                    <button class='btn btn-success form-control' id='sign_up'>save</button>
+                  </div>    
+                      
+               </div>
+            </div>  
+            
+          </div>
+          
+          <!-- {% load static %}
+          <script typr='text/javascript' src="{% static 'new.js' %}"></script> -->
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      </div>
+    
+</body>    
+</html>

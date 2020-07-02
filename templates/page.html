@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <title>Hello, world!</title>
+  </head>
+<script type='text/javascript'>
+window.onload=initAll;
+
+var idBtn;
+var Showbook;
+function initAll(){
+        Showbook=document.getElementById("nav-profile-tab")
+        Showbook.onclick=Book;
+
+        idBtn=document.getElementById('AddBook');
+        idBtn.onclick=operation;
+    
+       
+
+}
+function Book(){
+  var req=new XMLHttpRequest();
+  url='/showBooks';
+  req.onreadystatechange=function(){
+    if(this.readyState==4 && this.status==200){
+      alert(eval(req.responseText));
+      var data=eval(req.responseText);
+      var div = document.getElementById('showBooks12');
+      div.innerHTML='';
+      var table=document.createElement('TABLE');
+      
+      var row = table.insertRow(0);
+      var cell1=row.insertCell(0);
+      var cell2=row.insertCell(1);
+      var cell3=row.insertCell(2);
+      var cell4=row.insertCell(3);
+      
+      cell1.innerHTML='Book Name';
+      cell2.innerHTML='Book Pages';
+      cell3.innerHTML='Book Prize';
+      cell4.innerHTML='Delete Book';
+
+
+      
+      for(var i=0; i<data.length; i++){
+        var row = table.insertRow(i+1);
+        var names=row.insertCell(0);
+        var pages=row.insertCell(1);
+        var prize=row.insertCell(2);
+        var deletebook=row.insertCell(3);
+       
+        names.innerHTML=data[i].name;
+        pages.innerHTML=data[i].pages;
+        prize.innerHTML=data[i].prize;
+        deletebook.innerHTML='&times';
+        deletebook.className='text-danger text-center'
+        deletebook.style.fontSize='20px'
+        deletebook.style.cursor='pointer'
+        deletebook.id=data[i].id;
+        
+        deletebook.onclick= function(){
+          var obj =this;
+          var id = this.id;
+          var req = new XMLHttpRequest();
+          var url = '/deleteBook?id='+id;
+          req.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                  if(req.responseText=='true'){
+                    // alert(obj.parentNode.nodeName);
+                    table.deleteRow(obj.parentNode.rowIndex);
+                  }
+     
+                  }
+              };
+              req.open("GET", url, true);
+              req.send();            
+        }
+      }
+      table.className='table text-center table-striped'
+      div.append(table) 
+    } 
+  }
+  req.open('GET',url,true);
+  req.send();
+}
+
+
+function operation(){
+    var name=document.getElementById('name').value;
+    var pages=document.getElementById('pages').value;
+    var prize=document.getElementById('prize').value;
+    var url='/BookAdd?name='+name+'&pages='+pages+'&prize='+prize;
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        if(req.responseText=='true'){
+          document.getElementById('name').value='';
+          document.getElementById('pages').value='';
+          document.getElementById('prize').value='';
+
+        }
+     
+    }
+  };
+  req.open("GET", url, true);
+  req.send();
+}
+</script>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-primary bg-dark">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+        </ul>
+        <div class="my-2 my-lg-0">
+            <a class="my-2 my-sm-0" href="{% url 'signUp' %}">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+    
+    <div class='col-lg-8 border border-success rounded p-4 m-4 mx-auto'>
+      <nav class='md-1 mt-2'>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Add Book</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" >Show Book</a>
+          
+          </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+           <!-- Add book -->
+           
+           <div class='col-lg-8 border border-info rounded m-4 p-4 mx-auto'>
+            <P class='alert alert-success'>Add Book</P>
+              <div class='form-group'>
+                <lable>Book Name</lable>
+                <input type='text' id='name' class='form-control'>
+              </div>
+              <div class='form-group'>
+                <lable>Book Pages</lable>
+                <input type='number' id='pages' class='form-control'>
+              </div>
+              <div class='form-group'>
+                <lable>Book Prize</lable>
+                <input type='number' id='prize' class='form-control'>
+              </div>
+              <div class='form-group'>
+                <button class='btn btn-success form-control' id='AddBook'>save</button>
+              </div>    
+                  
+           </div>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <!--show book-->
+            <h1 class='alert alert-success'>Show Book</h1>
+            
+            <div id='showBooks12'>
+
+            </div>
+        </div>  
+        
+      </div>
+      
+      <!-- {% load static %}
+      <script typr='text/javascript' src="{% static 'new.js' %}"></script> -->
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </div>
+  
+</body>
+</html>
